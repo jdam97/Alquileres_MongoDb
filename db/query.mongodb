@@ -799,76 +799,41 @@ db.registro.insertMany([
 //     }
 // ]);
 
-// /**
-//  * ! Mostrar todos los clientes registrados en la base de datos.
-//  */
-// use("db_campus_alquiler");
-// // db.Cliente.find({ID : { $gt : 0}})
-// db.Cliente.find()
 
-// /**
-//  * ! Obtener todos los automóviles disponibles para alquiler
-//  */
-// use("db_campus_alquiler");
-// db.Contrato.aggregate([
-//     {
-//         $lookup: {
-//             from: 'Automovil',
-//             localField: 'ID_Automovil',
-//             foreignField: 'ID',
-//             as: 'relacion'
-//         }
-//     },
-//     {
-//         $match: { Estado: { $eq: 'Disponible' } }
-//     },
-//     {
-//         $unwind: '$relacion'
-//     },
-//     {
-//         $project: {
-//             Fecha_Fin: 0,
-//             Fecha_Inicio: 0,
-//             _id: 0, 
-//             'relacion._id': 0 
-//         }
-//     }
-// ]);
-// /**
-//  * !  Listar todos los alquileres activos junto con los datos de los clientes relacionados.
-//  */
-// use("db_campus_alquiler");
-// db.Contrato.aggregate([
-//     // Filtrar solo los contratos activos
-//     { $match: { Estado: 'Activo' } },
-//     // Unir con la colección "Cliente" usando ID_Cliente como campo de unión
-//     {
-//         $lookup: {
-//             from: 'Cliente',
-//             localField: 'ID_Cliente',
-//             foreignField: 'ID',
-//             as: 'clienteInfo'
-//         }
-//     },
-//     { $unwind: '$clienteInfo' },
-//     // Proyectar solo los campos deseados
-//     {
-//         $project: {
-//             _id: 0,
-//             Fecha_Inicio : 0,
-//             Fecha_Fin : 0,
-//             ID_Cliente :0,
-//             ID_Automovil : 0,
-//             'clienteInfo._id' : 0
-//         }
-//     },
-//     {
-//         $group: {
-//             _id: '$ID',
-//             contratos: {
-//                 $push: '$$ROOT'
-//             }
-//         }
-//     }
-// ]);
+use("db_alquileres_mongo");
+db.getCollection("contrato").aggregate([
+    { 
+        $match: { Estado: 'Activo' } 
+    },
 
+{
+    $lookup: { // innerjoin en SQL
+        from: "cliente", //desde: acá se coloca la tabla que deseo enlazar
+        localField: "ID_Cliente", // el campo el cual es foraneo con la tabla que puse arriba que deseo enlazar
+        foreignField: "ID", //el iD este caso de cliente
+        as:"Alquiler_activo",
+    }
+},
+{
+    $unwind: "$Alquiler_activo"
+    //Desestructura y me pone los datos en campos individuales, no en un array
+},
+{
+    $project: { // $ project: sirve para omitir algunos campos que no quiero que me traiga en la solicitud
+        _id: 0,
+        Fecha_Inicio : 0,
+        Fecha_Fin : 0,
+        ID_Cliente :0,
+        ID_Automovil : 0,
+        "Alquiler_activo._id" : 0
+    }
+},
+{
+    $group: {
+        _id: '$ID',
+        contratos: {
+            $push: '$$ROOT'
+        }
+    }
+}
+])

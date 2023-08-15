@@ -10,6 +10,7 @@ Cliente.use(limitRequest());
 
 //Endpoints
 
+//2. Mostrar todos los clientes registrados en la base de datos.
 //GET: traerme a todos los clientes
 Cliente.get("/", async (req,res) =>{
     console.log(req.rateLimit);
