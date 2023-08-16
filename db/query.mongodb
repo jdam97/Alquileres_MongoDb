@@ -837,3 +837,39 @@ db.getCollection("contrato").aggregate([
     }
 }
 ])
+
+use("db_alquileres_mongo");
+db.getCollection("contrato").aggregate([
+    {
+        $match:{Estado:"Pendiente"}
+    },
+    {
+        $lookup: {
+            from: "automovil", //Colección a la que se hace referencia para unir los datos
+            localField: "ID_Automovil", // Campo en la colección actual que se utiliza como referencia
+            foreignField: "ID", // Campo en la colección "cliente" que se usa para la unión
+            as:"Alquiler_automovil",// Nombre del nuevo campo que contendrá los documentos unidos
+        },
+    },
+    {
+        $unwind: "$Alquiler_automovil" // no olvidar el $
+    },
+    {
+        $project:{
+            _id: 0,
+            Fecha_Inicio : 0,
+            Fecha_Fin : 0,
+            ID_Cliente :0,
+            ID_Automovil : 0,
+            "Alquiler_automovil._id" : 0
+        }
+    },
+    {
+        $group:{
+            _id: '$ID',
+            contratos: {
+            $push: '$$ROOT'
+            }
+        }
+    }
+])
