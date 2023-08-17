@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import { limitRequest } from "./config/limit.js"; //importo limite de peticiones
 
 //Routers
 import Cliente from "./routers/clientes.js";
@@ -11,9 +12,9 @@ const app = express();
 app.use(express.json());
 
 //Endpoints
-app.use("/clientes",Cliente);
-app.use("/automoviles",Automovil);
-app.use("/contratos",Contrato)
+app.use("/clientes",limitRequest(),Cliente);
+app.use("/automoviles",limitRequest(),Automovil);
+app.use("/contratos",limitRequest(),Contrato)
 
 
 

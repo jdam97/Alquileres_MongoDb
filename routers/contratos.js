@@ -1,12 +1,9 @@
 import { Router} from "express";
 import {connectDB} from "../db/atlas.js"; //conexion con atlas
-import { limitRequest } from "../config/limit.js"; //importo limite de peticiones
 import { ObjectId } from "mongodb"; //exporto objectId para cuando tenga que buscar en alguna consulta por id de mongodb
 
 const Contrato = Router();
 let db = await connectDB();
-
-Contrato.use(limitRequest);//coloco el limite de solicitudes para todas las consultas de este archivo
 
 //Peticiones
 

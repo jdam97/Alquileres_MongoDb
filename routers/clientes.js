@@ -1,12 +1,9 @@
 import { Router } from "express";
 import { connectDB } from "../db/atlas.js";
-import { limitRequest } from "../config/limit.js";
 const Cliente = Router();
 
 let db = await connectDB();
 
-
-Cliente.use(limitRequest());
 
 //Endpoints
 
