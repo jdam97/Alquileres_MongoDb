@@ -1,6 +1,7 @@
 import { Router} from "express";
 import {connectDB} from "../db/atlas.js"; //conexion con atlas
 import { ObjectId } from "mongodb"; //exporto objectId para cuando tenga que buscar en alguna consulta por id de mongodb
+import { IsTimeZone } from "class-validator";
 
 const Contrato = Router();
 let db = await connectDB();
@@ -34,11 +35,11 @@ Contrato.get("/", async(req,res)=>{
                 _id: 0,
                 Fecha_Inicio : 0,
                 Fecha_Fin : 0,
-                ID_Cliente :0,
+                ID_Cliente :0,  
                 ID_Automovil : 0,
                 "Alquiler_activo._id" : 0
-            }
         },
+            },
         {
             $group: { //agrupar todo en 1 sola respuesta
                 _id: '$ID',
