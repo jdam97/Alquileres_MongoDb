@@ -2,6 +2,7 @@ import { Router} from "express";
 import {connectDB} from "../db/atlas.js"; //conexion con atlas
 import { ObjectId } from "mongodb"; //exporto objectId para cuando tenga que buscar en alguna consulta por id de mongodb
 import { IsTimeZone } from "class-validator";
+import { rateLimit } from "express-rate-limit";
 
 const Contrato = Router();
 let db = await connectDB();
@@ -9,7 +10,7 @@ let db = await connectDB();
 //Peticiones
 
 //4.Listar todos los alquileres activos junto con los datos de los clientes relacionados.
-Contrato.get("/", async(req,res)=>{
+Contrato.get("/alquileres", async(req,res)=>{
     console.log(req.rateLimit);
     try{
         const collection = db.collection("contrato");
@@ -109,6 +110,42 @@ Contrato.get("/reservas", async (req,res)=>{
         })
     }
 })
+
+//6.Obtener los detalles del alquiler con el ID_Alquiler específico.
+Contrato.get("/detalles/:ID", async(req,res)=>{
+    console.log(req.rateLimit);
+    const id = req.params.ID
+    console.log(id);
+    try {
+       let collection = db.collection("contrato");
+       const data = await collection.find({ID:parseInt(id)}).toArray()
+       res.send(data)
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+//6.1.Obtener los detalles por el ID (otra forma)
+Contrato.get("/detalles1/:id",async(req,res)=>{
+    console.log(req.rateLimit);
+    const {id} = req.params;
+    console.log(id);
+    try {
+        const collection = db.collection("contrato");
+        const data = await collection.find( {_id: new ObjectId(id)})
+        .toArray();
+        res.send(data)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message:"Error al enlistar detalles de los contratos",
+            error:error.message
+        })
+    }
+})
+
+
+
 
 
 export default Contrato;
