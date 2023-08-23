@@ -873,3 +873,6 @@ db.getCollection("contrato").aggregate([
         }
     }
 ])
+
+use("db_alquileres_mongo");
+db.getCollection("sucursal").find({},{Nombre:1,Cantidad_Disponible:1,_id:0})

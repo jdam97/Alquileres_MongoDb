@@ -6,7 +6,8 @@ import { limitRequest } from "./config/limit.js"; //importo limite de peticiones
 import Cliente from "./routers/clientes.js";
 import Automovil  from "./routers/automovil.js";
 import Contrato from "./routers/contratos.js";
-import Empleados from "./routers/empleados.js"
+import Empleados from "./routers/empleados.js";
+import Sucursal from "./routers/sucursal.js";
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use("/clientes",limitRequest(),Cliente);
 app.use("/automoviles",limitRequest(),Automovil);
 app.use("/contratos",limitRequest(),Contrato);
 app.use("/empleados",limitRequest(),Empleados);
+app.use("/sucursales",limitRequest(),Sucursal)
 
 
 

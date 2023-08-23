@@ -144,6 +144,27 @@ Contrato.get("/detalles1/:id",async(req,res)=>{
     }
 })
 
+//9.Obtener el costo total de un alquiler específico.
+Contrato.get("/costo/:id", async(req,res)=>{
+    console.log(req.rateLimit);
+    
+    try {
+        const {id} = req.params;
+        console.log(id);
+        let collection = db.collection("contrato");
+        let data = await collection.find({_id:new ObjectId(id)},{projection: {Costo_Total:1,_id:0}})
+        .toArray();
+        res.send(data[0])
+    } catch (error) {
+        res.status(500).json({
+            message: "Error al encontrar el id",
+            error: error.message
+        })
+    }
+})
+
+
+
 
 
 

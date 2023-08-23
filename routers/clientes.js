@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { connectDB } from "../db/atlas.js";
+import { ObjectId } from "mongodb";
 const Cliente = Router();
 
 let db = await connectDB();
@@ -23,5 +24,24 @@ Cliente.get("/", async (req,res) =>{
         });
     }
 });
+
+//10. Listar los clientes con el DNI específico.
+Cliente.get("/:dni", async (req,res)=>{
+    console.log(req.rateLimit);
+    try {
+        const {dni} = req.params;
+        console.log(dni);
+        let collection = db.collection("cliente");
+        let data = await collection.find({DNI:dni})
+        .toArray();
+        res.send(data);
+        
+    } catch (error) {
+        res.status(500).json({
+            message:"Error al enlistar los clientes por el dn1",
+            error: error.message
+        })
+    }
+})
 
 export default Cliente;
