@@ -7,33 +7,39 @@ let Registro = Router();
 let db = await connectDB();
 
 //13.Listar las reservas pendientes realizadas por un cliente específico.
-Registro.get("/reservas", async(req,res)=>{
+Registro.get("/reservas/:dni", async(req,res)=>{
     console.log(req.rateLimit);
     try {
         let {dni} = req.params
         let collection = db.collection("contrato");
         let data = await collection.aggregate([
             {
-                $match: ID_Cliente = dni
+                $match:{Tipo: "Reserva",Estado:"Pendiente"}  
             },
             {
                 $lookup:{
-                    from: "cliente",
-                    localField: "ID_Cliente",
-                    foreignField: "ID",
-                    as: "reservas"
+                    from:"cliente",
+                    localField:"ID_Cliente",
+                    foreignField:"ID",
+                    as:"reserva_cliente"
                 }
             },
             {
-                $unwind: "$reservas"
+                $match:{"reserva_cliente.DNI":dni}
             },
             {
-                $lookup
+                $unwind: "$reserva_cliente" 
+            },
+            {
+                $project:{
+                    reserva_cliente:0,
+                    _id:0
+                }
             }
 
         ])
         .toArray();
-        res.send(data)
+        res.send(data[0])
         
     } catch (error) {
         res.status(500).json({

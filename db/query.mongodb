@@ -879,20 +879,22 @@ db.getCollection("sucursal").find({},{Nombre:1,Cantidad_Disponible:1,_id:0})
 
 use("db_alquileres_mongo");
 db.getCollection("contrato").aggregate([
-      {
-        $lookup: {
-          from: "cliente",
-          localField: "ID_cliente",
-          foreignField: "DNI",
-          as: "Cliente_Info",
-        },
-      },
-      {
-        $match: {
-          ID_cliente: 12345678,
-        },
-      },
-      {
-        $unwind: "$Cliente_Info",
-      }
+    {
+        $match:{Tipo: "Reserva",Estado:"Pendiente"}  
+    },
+    {
+        $lookup:{
+            from:"cliente",
+            localField:"ID_Cliente",
+            foreignField:"ID",
+            as:"reserva_cliente"
+        }
+    },
+    {
+        $match:{"reserva_cliente.DNI":87654321}
+    },
+    {
+        $unwind: "reserva_cliente"
+    } 
 ])
+
