@@ -24,6 +24,23 @@ Cliente.get("/", async (req,res) =>{
         });
     }
 });
+//15. Obtener los datos de los clientes que realizaron al menos un alquiler.
+Cliente.get("/datos", async(req,res)=>{
+    console.log(req.rateLimit);
+    try {
+        let collection = db.collection("cliente");
+        let data = await collection.find({})
+        .toArray()
+        res.send(data)
+        
+    } catch (error) {
+        res.status(500).json({
+            message:"No se pueden listar los clientes",
+            error:error.message
+        })
+    }
+})
+
 
 //10. Listar los clientes con el DNI específico.
 Cliente.get("/:dni", async (req,res)=>{
@@ -43,5 +60,8 @@ Cliente.get("/:dni", async (req,res)=>{
         })
     }
 })
+
+
+
 
 export default Cliente;
