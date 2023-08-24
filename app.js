@@ -8,6 +8,8 @@ import Automovil  from "./routers/automovil.js";
 import Contrato from "./routers/contratos.js";
 import Empleados from "./routers/empleados.js";
 import Sucursal from "./routers/sucursal.js";
+import Registro from "./routers/registro.js";
+import { rateLimit } from "express-rate-limit";
 
 dotenv.config();
 const app = express();
@@ -19,6 +21,7 @@ app.use("/automoviles",limitRequest(),Automovil);
 app.use("/contratos",limitRequest(),Contrato);
 app.use("/empleados",limitRequest(),Empleados);
 app.use("/sucursales",limitRequest(),Sucursal)
+app.use("/registros",limitRequest(),Registro)
 
 
 

@@ -163,7 +163,22 @@ Contrato.get("/costo/:id", async(req,res)=>{
     }
 })
 
+//12.Obtener los detalles del alquiler que tiene fecha de inicio en '2023-07-05'.
+Contrato.get("/detalles", async (req,res)=>{
+    console.log(req.rateLimit);
+    try {
+        let collection = db.collection("contrato");
+        let data = await collection.find({Fecha_Inicio:{$eq:new Date("2023-07-05")}})
+        .toArray();
+        res.send(data)
 
+    } catch (error) {
+        error.status(500).json({
+            message:"Error al enlistar detalles de alquileres",
+            error:error.message
+        })
+    }
+})
 
 
 
