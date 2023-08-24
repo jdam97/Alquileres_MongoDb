@@ -152,7 +152,7 @@ Contrato.get("/costo/:id", async(req,res)=>{
         const {id} = req.params;
         console.log(id);
         let collection = db.collection("contrato");
-        let data = await collection.find({_id:new ObjectId(id)},{projection: {Costo_Total:1,_id:0}})
+        let data = await collection.find({_id:new ObjectId(id)},{$projection: {Costo_Total:1,_id:0}})
         .toArray();
         res.send(data[0])
     } catch (error) {
